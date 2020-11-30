@@ -6,22 +6,10 @@ import matplotlib.pyplot as plt
 from amptorch.ase_utils import AMPtorch
 from amptorch.trainer import AtomsTrainer
 from ase.io.trajectory import Trajectory
+from pandas import DataFrame
 
 images_test = Trajectory('data/test.traj')
 images_train = Trajectory('data/train.traj')
-'''
-distances = np.linspace(2, 5, 100)
-for x in range(0,1):
-    print(mol)
-    mol.set_cell([10, 10, 10])
-    mol.wrap(pbc=True)
-    vec = mol[2].position - mol[0].position
-    for d in distances:
-        mol[2].position = mol[0].position * vec * d
-        mol[2].position = mol[0].position * vec * d
-        images_train.append(mol)
-        images_test.append(mol)
-'''
 
 Gs = {
     "default": {
@@ -79,6 +67,8 @@ predictions = trainer.predict(images_test)
 
 true_energies = np.array([image.get_potential_energy() for image in images_test])
 pred_energies = np.array(predictions["energy"])
+DataFrame(true_energies).to_csv('figures/true_energies.csv')
+DataFrame(pred_energies).to_csv('figures/pred_energies.csv')
 
 print("Energy MSE:", np.mean((true_energies - pred_energies) ** 2))
 print("Energy MAE:", np.mean(np.abs(true_energies - pred_energies)))
