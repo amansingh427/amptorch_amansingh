@@ -1,10 +1,8 @@
 import numpy as np
 import torch
 from ase import Atoms
-# from ase.calculators.lammpsrun import LAMMPS
-from ase.calculators.vasp.vasp2 import Vasp2
 from ase.calculators.singlepoint import SinglePointCalculator
-
+import matplotlib.pyplot as plt
 from amptorch.ase_utils import AMPtorch
 from amptorch.trainer import AtomsTrainer
 from ase.io.trajectory import Trajectory
@@ -72,8 +70,9 @@ config = {
     },
 }
 
-torch.set_num_threads(1)
+torch.set_num_threads(4)
 trainer = AtomsTrainer(config)
+trainer.load_checkpoint('checkpoints/2020-11-29-21-36-44-test')
 trainer.train()
 
 predictions = trainer.predict(images_test)
@@ -83,3 +82,13 @@ pred_energies = np.array(predictions["energy"])
 
 print("Energy MSE:", np.mean((true_energies - pred_energies) ** 2))
 print("Energy MAE:", np.mean(np.abs(true_energies - pred_energies)))
+
+plt.scatter(true_energies, pred_energies)
+plt.plot(min(true_energies), max(true_energies))
+plt.ylabel('Amptorch base level predictions')
+plt.xlabel('True energies')
+combined = true_energies + pred_energies
+minn = min(combined)
+maxx = max(combined)
+plt.plot([minn, maxx], [minn, maxx])
+plt.savefig('figures/initial_train.pdf')
