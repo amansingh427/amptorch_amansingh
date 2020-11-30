@@ -41,6 +41,7 @@ config = {
     "dataset": {
         "raw_data": images_train,
         "val_split": 0.1,
+        "fp_scheme": 'SNN_Gaussian',
         "fp_params": Gs,
         "save_fps": True,
         # feature scaling to be used - normalize or standardize
@@ -60,7 +61,6 @@ config = {
 
 torch.set_num_threads(4)
 trainer = AtomsTrainer(config)
-trainer.load_checkpoint('checkpoints/2020-11-29-21-36-44-test')
 trainer.train()
 
 predictions = trainer.predict(images_test)
