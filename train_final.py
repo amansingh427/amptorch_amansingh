@@ -41,7 +41,6 @@ config = {
     "dataset": {
         "raw_data": images_train,
         "val_split": 0.1,
-        "fp_scheme": 'SNN_Gaussian',
         "fp_params": Gs,
         "save_fps": True,
         # feature scaling to be used - normalize or standardize
